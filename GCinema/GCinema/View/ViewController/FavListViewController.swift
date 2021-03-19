@@ -42,6 +42,7 @@ class FavListViewController: UIViewController {
     private func setupSearchBar() {
         
         let searchC = UISearchController(searchResultsController: nil)
+        searchC.searchBar.delegate = self
         self.navigationItem.searchController = searchC
     }
     
@@ -56,6 +57,7 @@ class FavListViewController: UIViewController {
     }
 }
 
+//MARK: Extension UITableView Delegate Methods
 extension FavListViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -94,6 +96,18 @@ extension FavListViewController: UITableViewDelegate, UITableViewDataSource {
     }
 }
 
+
+//MARK: Extension SearchBar Delegate Methods
+extension FavListViewController: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        self.mFavMovieList = []
+        self.mFavListTV.reloadData()
+        self.mUPresenter?.getSearchFavMovieList(queryIn: searchText)
+    }
+}
+
+//MARK: Extension Protocols Methods
 extension FavListViewController: UserViewProtocol {
     
     func onUserAccess() {}

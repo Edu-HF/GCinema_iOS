@@ -178,4 +178,39 @@ class UserPresenter: NSObject, UserPresenterProtocol {
             self.getUserFavList()
         })
     }
+    
+    func getSearchFavMovieList(queryIn: String?) {
+        
+        guard let uID = self.getUser()?.uID else { return }
+        guard let mQuery = queryIn else { self.getUserFavList(); return }
+        
+        
+        if mQuery != "" {
+            
+            let mDBRef = self.mDBReference.child(GKeys.USER_FB_FAV_PATH_KEY).child("\(uID)")
+            mDBRef.observeSingleEvent(of: .value, with: { snapShotIn in
+                
+                var mFavList: [Movie] = []
+                for mChild in snapShotIn.children {
+                    if let snap = mChild as? DataSnapshot {
+                        if let mMovieAny = snap.value {
+                            if let mMovie = self.makeAnyDecode(Movie.self, mMovieAny) {
+                                mFavList.append(mMovie)
+                            }
+                        }
+                    }
+                }
+                
+                mFavList = mFavList.filter {
+                    guard let mTitle = $0.mTitle else { return false }
+                    return mTitle.contains(mQuery)
+                }
+                
+                self.mainView?.onFavListRetrieval(movieListIn: mFavList)
+            })
+            
+        }else{
+            self.getUserFavList()
+        }
+    }
 }

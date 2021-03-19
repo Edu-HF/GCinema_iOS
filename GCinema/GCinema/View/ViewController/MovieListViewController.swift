@@ -96,6 +96,7 @@ extension MovieListViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         self.mMovieList = []
+        self.mMovieListCV.reloadData()
         self.mPresenter?.getSearchMovieList(pageIn: nil, queryIn: searchText)
     }
 }

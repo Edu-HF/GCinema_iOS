@@ -84,15 +84,20 @@ class MainPresenter: NSObject, MovieListPresenterProtocol {
     func getSearchMovieList(pageIn: Int?, queryIn: String?) {
         
         guard let mQuery = queryIn else { return }
-        self.mainService?.getSearchMovieList(pageIn: pageIn, queryIn: mQuery).done { responseIn in
-            
-            if let movieList = responseIn.movieList {
-                self.mMovieList = movieList
-                self.mainView?.onMovieListRetrieval(movieListIn: self.mMovieList)
-            }
         
-        }.catch { errorIn in
-            self.mainView?.onMSGRetrieval(msgIn: errorIn.localizedDescription)
+        if mQuery != "" {
+            self.mainService?.getSearchMovieList(pageIn: pageIn, queryIn: mQuery).done { responseIn in
+                
+                if let movieList = responseIn.movieList {
+                    self.mMovieList = movieList
+                    self.mainView?.onMovieListRetrieval(movieListIn: self.mMovieList)
+                }
+            
+            }.catch { errorIn in
+                self.mainView?.onMSGRetrieval(msgIn: errorIn.localizedDescription)
+            }
+        }else{
+            self.getMovieList(pageIn: pageIn)
         }
     }
     
